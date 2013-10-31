@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'gitlab-grit'
-  s.version     = '2.6.0'
-  s.date        = '2013-05-06'
+  s.version     = `cat VERSION`
+  s.date        = Time.now.strftime("%Y-%m-%d")
   s.license     = 'MIT'
   s.summary     = "Ruby Git bindings."
   s.description = "Grit is a Ruby library for extracting information from a git repository in an object oriented manner. GitLab fork"

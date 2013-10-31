@@ -50,7 +50,7 @@ require 'grit/merge'
 require 'grit/grep'
 
 module Grit
-  VERSION = '2.6.0'
+  VERSION = File.read("VERSION").strip
 
   class << self
     # Set +debug+ to true to log all git calls and responses
