@@ -315,10 +315,13 @@ module Grit
       env = options.delete(:env) || {}
       raise_errors = options.delete(:raise)
       process_info = options.delete(:process_info)
+      pipeline = options.delete(:pipeline)
 
       # fall back to using a shell when the last argument looks like it wants to
       # start a pipeline for compatibility with previous versions of grit.
-      return run(prefix, cmd, '', options, args) if args[-1].to_s[0] == ?|
+      if args[-1].to_s[0] == ?| && pipeline
+        return run(prefix, cmd, '', options, args)
+      end
 
       # more options
       input    = options.delete(:input)
@@ -414,7 +417,10 @@ module Grit
     end
 
     # DEPRECATED OPEN3-BASED COMMAND EXECUTION
-
+    # Used only for pipeline support.
+    # Ex.
+    #   git log | grep bugfix
+    #
     def run(prefix, cmd, postfix, options, args, &block)
       timeout  = options.delete(:timeout) rescue nil
       timeout  = true if timeout.nil?

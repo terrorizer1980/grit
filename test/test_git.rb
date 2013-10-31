@@ -89,7 +89,7 @@ class TestGit < Test::Unit::TestCase
 
   def test_piping_should_work_on_1_9
     @git.expects(:sh).with("#{Git.git_binary} --git-dir='#{@git.git_dir}' archive 'master' | gzip")
-    @git.archive({}, "master", "| gzip")
+    @git.archive({pipeline: true}, "master", "| gzip")
   end
 
   def test_fs_read
