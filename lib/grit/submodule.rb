@@ -63,10 +63,15 @@ module Grit
         if line =~ /^\[submodule "(.+)"\]$/
           current = $1
           config[current] = {}
-          config[current]['id'] = (commit.tree/current).id
+          submodule = (commit.tree/current.strip)
+          config[current]['id'] = submodule.id if submodule
         elsif line =~ /^\t(\w+) = (.+)$/
           config[current][$1] = $2
-          config[current]['id'] = (commit.tree/$2).id if $1 == 'path'
+
+          if $1 == 'path'
+            submodule = (commit.tree/$2.strip)
+            config[current]['id'] = submodule.id if submodule
+          end
         else
           # ignore
         end
