@@ -50,7 +50,7 @@ require 'grit/merge'
 require 'grit/grep'
 
 module Grit
-  VERSION = File.read("VERSION").strip
+  VERSION = File.read(File.expand_path("../../VERSION", __FILE__)).chomp.strip
 
   class << self
     # Set +debug+ to true to log all git calls and responses
