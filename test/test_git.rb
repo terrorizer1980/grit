@@ -48,13 +48,6 @@ class TestGit < Test::Unit::TestCase
     @git.something(:timeout => false)
   end
 
-  def test_raises_if_too_many_bytes
-    fail if jruby?
-    assert_raises Grit::Git::GitTimeout do
-      @git.sh "yes | head -#{Grit::Git.git_max_size + 1}"
-    end
-  end
-
   def test_raises_on_slow_shell
     Grit::Git.git_timeout = 0.0000001
     assert_raises Grit::Git::GitTimeout do
@@ -70,26 +63,6 @@ class TestGit < Test::Unit::TestCase
         @git.version
       end
     end
-  end
-
-  def test_it_really_shell_escapes_arguments_to_the_git_shell
-    @git.expects(:sh).with("#{Git.git_binary} --git-dir='#{@git.git_dir}' foo --bar='bazz\\'er'")
-    @git.run('', :foo, '', {:bar => "bazz'er"}, [])
-    @git.expects(:sh).with("#{Git.git_binary} --git-dir='#{@git.git_dir}' bar -x 'quu\\'x'")
-    @git.run('', :bar, '', {:x => "quu'x"}, [])
-  end
-
-  def test_it_shell_escapes_the_standalone_argument
-    @git.expects(:sh).with("#{Git.git_binary} --git-dir='#{@git.git_dir}' foo 'bar\\'s'")
-    @git.run('', :foo, '', {}, ["bar's"])
-
-    @git.expects(:sh).with("#{Git.git_binary} --git-dir='#{@git.git_dir}' foo 'bar' '\\; echo \\'noooo\\''")
-    @git.run('', :foo, '', {}, ["bar", "; echo 'noooo'"])
-  end
-
-  def test_piping_should_work_on_1_9
-    @git.expects(:sh).with("#{Git.git_binary} --git-dir='#{@git.git_dir}' archive 'master' | gzip")
-    @git.archive({pipeline: true}, "master", "| gzip")
   end
 
   def test_fs_read

@@ -684,7 +684,7 @@ module Grit
 
     def grep(searchtext, contextlines = 3, branch = 'master')
       context_arg = '-C ' + contextlines.to_s
-      result = git.native(:grep, {pipeline: false}, '-n', '-E', '-i', '-z', '--heading', '--break', context_arg, searchtext, branch).encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+      result = git.native(:grep, {}, '-n', '-E', '-i', '-z', '--heading', '--break', context_arg, searchtext, branch).encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
       greps = []
       filematches = result.split("\n\n")
       filematches.each do |filematch|
