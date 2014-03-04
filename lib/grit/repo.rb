@@ -581,27 +581,6 @@ module Grit
       Commit.diff(self, commit)
     end
 
-    # Archive the given treeish
-    #   +treeish+ is the treeish name/id (default 'master')
-    #   +prefix+ is the optional prefix
-    #
-    # Examples
-    #   repo.archive_tar
-    #   # => <String containing tar archive>
-    #
-    #   repo.archive_tar('a87ff14')
-    #   # => <String containing tar archive for commit a87ff14>
-    #
-    #   repo.archive_tar('master', 'myproject/')
-    #   # => <String containing tar archive and prefixed with 'myproject/'>
-    #
-    # Returns String (containing tar archive)
-    def archive_tar(treeish = 'master', prefix = nil)
-      options = {}
-      options[:prefix] = prefix if prefix
-      self.git.archive(options, treeish)
-    end
-
     # Write an archive directly to a file
     #   +treeish+ is the treeish name/id (default 'master')
     #   +prefix+ is the optional prefix (default nil)
