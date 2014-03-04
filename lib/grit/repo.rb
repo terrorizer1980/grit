@@ -1,5 +1,7 @@
 module Grit
   class Repo
+    include POSIX::Spawn
+
     DAEMON_EXPORT_FILE = 'git-daemon-export-ok'
     BATCH_PARSERS      = {
       'commit' => ::Grit::Commit
@@ -590,11 +592,20 @@ module Grit
     #
     # Returns nothing
     def archive_to_file(treeish = 'master', prefix = nil, filename = 'archive.tar.gz', format = nil, pipe = "gzip")
-      options = {}
-      options[:prefix] = prefix if prefix
-      options[:format] = format if format
-      options[:pipeline] = true
-      self.git.archive(options, treeish, "| #{pipe} > #{filename}")
+      archive_cmd = %W(#{Git.git_binary} --git-dir=#{self.git.git_dir} archive)
+      archive_cmd << "--prefix=#{prefix}" if prefix
+      archive_cmd << "--format=#{format}" if format
+      archive_cmd << treeish
+
+      open(filename, 'w') do |file|
+        pipe_rd, pipe_wr = IO.pipe
+        git_pid = spawn(*archive_cmd, :out => pipe_wr)
+        compress_pid = spawn(pipe, :in => pipe_rd, :out => file)
+        pipe_rd.close
+        pipe_wr.close
+        Process.waitpid(git_pid)
+        Process.waitpid(compress_pid)
+      end
     end
 
     # Enable git-daemon serving of this repository by writing the
