@@ -595,7 +595,7 @@ module Grit
       archive_cmd = %W(#{Git.git_binary} --git-dir=#{self.git.git_dir} archive)
       archive_cmd << "--prefix=#{prefix}" if prefix
       archive_cmd << "--format=#{format}" if format
-      archive_cmd << treeish
+      archive_cmd += %W(-- #{treeish})
 
       open(filename, 'w') do |file|
         pipe_rd, pipe_wr = IO.pipe
