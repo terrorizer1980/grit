@@ -287,12 +287,6 @@ class TestRepo < Test::Unit::TestCase
     #@r.archive_tar  -- no assertion being done here
   end
 
-  # archive_tar_gz
-
-  def test_archive_tar_gz
-    #@r.archive_tar_gz -- again, no assertion
-  end
-
   # enable_daemon_serve
 
   def test_enable_daemon_serve

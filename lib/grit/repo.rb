@@ -602,28 +602,6 @@ module Grit
       self.git.archive(options, treeish)
     end
 
-    # Archive and gzip the given treeish
-    #   +treeish+ is the treeish name/id (default 'master')
-    #   +prefix+ is the optional prefix
-    #
-    # Examples
-    #   repo.archive_tar_gz
-    #   # => <String containing tar.gz archive>
-    #
-    #   repo.archive_tar_gz('a87ff14')
-    #   # => <String containing tar.gz archive for commit a87ff14>
-    #
-    #   repo.archive_tar_gz('master', 'myproject/')
-    #   # => <String containing tar.gz archive and prefixed with 'myproject/'>
-    #
-    # Returns String (containing tar.gz archive)
-    def archive_tar_gz(treeish = 'master', prefix = nil)
-      options = {}
-      options[:prefix] = prefix if prefix
-      options[:pipeline] = true
-      self.git.archive(options, treeish, "| gzip -n")
-    end
-
     # Write an archive directly to a file
     #   +treeish+ is the treeish name/id (default 'master')
     #   +prefix+ is the optional prefix (default nil)
