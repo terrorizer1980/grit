@@ -1,5 +1,7 @@
 module Grit
   class Repo
+    include POSIX::Spawn
+
     DAEMON_EXPORT_FILE = 'git-daemon-export-ok'
     BATCH_PARSERS      = {
       'commit' => ::Grit::Commit
@@ -581,49 +583,6 @@ module Grit
       Commit.diff(self, commit)
     end
 
-    # Archive the given treeish
-    #   +treeish+ is the treeish name/id (default 'master')
-    #   +prefix+ is the optional prefix
-    #
-    # Examples
-    #   repo.archive_tar
-    #   # => <String containing tar archive>
-    #
-    #   repo.archive_tar('a87ff14')
-    #   # => <String containing tar archive for commit a87ff14>
-    #
-    #   repo.archive_tar('master', 'myproject/')
-    #   # => <String containing tar archive and prefixed with 'myproject/'>
-    #
-    # Returns String (containing tar archive)
-    def archive_tar(treeish = 'master', prefix = nil)
-      options = {}
-      options[:prefix] = prefix if prefix
-      self.git.archive(options, treeish)
-    end
-
-    # Archive and gzip the given treeish
-    #   +treeish+ is the treeish name/id (default 'master')
-    #   +prefix+ is the optional prefix
-    #
-    # Examples
-    #   repo.archive_tar_gz
-    #   # => <String containing tar.gz archive>
-    #
-    #   repo.archive_tar_gz('a87ff14')
-    #   # => <String containing tar.gz archive for commit a87ff14>
-    #
-    #   repo.archive_tar_gz('master', 'myproject/')
-    #   # => <String containing tar.gz archive and prefixed with 'myproject/'>
-    #
-    # Returns String (containing tar.gz archive)
-    def archive_tar_gz(treeish = 'master', prefix = nil)
-      options = {}
-      options[:prefix] = prefix if prefix
-      options[:pipeline] = true
-      self.git.archive(options, treeish, "| gzip -n")
-    end
-
     # Write an archive directly to a file
     #   +treeish+ is the treeish name/id (default 'master')
     #   +prefix+ is the optional prefix (default nil)
@@ -633,11 +592,20 @@ module Grit
     #
     # Returns nothing
     def archive_to_file(treeish = 'master', prefix = nil, filename = 'archive.tar.gz', format = nil, pipe = "gzip")
-      options = {}
-      options[:prefix] = prefix if prefix
-      options[:format] = format if format
-      options[:pipeline] = true
-      self.git.archive(options, treeish, "| #{pipe} > #{filename}")
+      archive_cmd = %W(#{Git.git_binary} --git-dir=#{self.git.git_dir} archive)
+      archive_cmd << "--prefix=#{prefix}" if prefix
+      archive_cmd << "--format=#{format}" if format
+      archive_cmd += %W(-- #{treeish})
+
+      open(filename, 'w') do |file|
+        pipe_rd, pipe_wr = IO.pipe
+        git_pid = spawn(*archive_cmd, :out => pipe_wr)
+        compress_pid = spawn(pipe, :in => pipe_rd, :out => file)
+        pipe_rd.close
+        pipe_wr.close
+        Process.waitpid(git_pid)
+        Process.waitpid(compress_pid)
+      end
     end
 
     # Enable git-daemon serving of this repository by writing the
@@ -716,7 +684,7 @@ module Grit
 
     def grep(searchtext, contextlines = 3, branch = 'master')
       context_arg = '-C ' + contextlines.to_s
-      result = git.native(:grep, {pipeline: false}, '-n', '-E', '-i', '-z', '--heading', '--break', context_arg, searchtext, branch).encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+      result = git.native(:grep, {}, '-n', '-E', '-i', '-z', '--heading', '--break', context_arg, searchtext, branch).encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
       greps = []
       filematches = result.split("\n\n")
       filematches.each do |filematch|
