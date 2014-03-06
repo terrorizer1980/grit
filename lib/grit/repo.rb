@@ -588,10 +588,10 @@ module Grit
     #   +prefix+ is the optional prefix (default nil)
     #   +filename+ is the name of the file (default 'archive.tar.gz')
     #   +format+ is the optional format (default nil)
-    #   +pipe+ is the command to run the output through (default 'gzip')
+    #   +pipe+ is the command to run the output through (default ['gzip'])
     #
     # Returns nothing
-    def archive_to_file(treeish = 'master', prefix = nil, filename = 'archive.tar.gz', format = nil, pipe = "gzip")
+    def archive_to_file(treeish = 'master', prefix = nil, filename = 'archive.tar.gz', format = nil, pipe = %W(gzip))
       archive_cmd = %W(#{Git.git_binary} --git-dir=#{self.git.git_dir} archive)
       archive_cmd << "--prefix=#{prefix}" if prefix
       archive_cmd << "--format=#{format}" if format
@@ -600,7 +600,7 @@ module Grit
       open(filename, 'w') do |file|
         pipe_rd, pipe_wr = IO.pipe
         git_pid = spawn(*archive_cmd, :out => pipe_wr)
-        compress_pid = spawn(pipe, :in => pipe_rd, :out => file)
+        compress_pid = spawn(*pipe, :in => pipe_rd, :out => file)
         pipe_rd.close
         pipe_wr.close
         Process.waitpid(git_pid)
