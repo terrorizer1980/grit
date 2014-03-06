@@ -588,22 +588,22 @@ module Grit
     #   +prefix+ is the optional prefix (default nil)
     #   +filename+ is the name of the file (default 'archive.tar.gz')
     #   +format+ is the optional format (default nil)
-    #   +pipe+ is the command to run the output through (default 'gzip')
+    #   +compress_cmd+ is the command to run the output through (default ['gzip'])
     #
     # Returns nothing
-    def archive_to_file(treeish = 'master', prefix = nil, filename = 'archive.tar.gz', format = nil, pipe = "gzip")
-      archive_cmd = %W(#{Git.git_binary} --git-dir=#{self.git.git_dir} archive)
-      archive_cmd << "--prefix=#{prefix}" if prefix
-      archive_cmd << "--format=#{format}" if format
-      archive_cmd += %W(-- #{treeish})
+    def archive_to_file(treeish = 'master', prefix = nil, filename = 'archive.tar.gz', format = nil, compress_cmd = %W(gzip))
+      git_archive_cmd = %W(#{Git.git_binary} --git-dir=#{self.git.git_dir} archive)
+      git_archive_cmd << "--prefix=#{prefix}" if prefix
+      git_archive_cmd << "--format=#{format}" if format
+      git_archive_cmd += %W(-- #{treeish})
 
       open(filename, 'w') do |file|
         pipe_rd, pipe_wr = IO.pipe
-        git_pid = spawn(*archive_cmd, :out => pipe_wr)
-        compress_pid = spawn(pipe, :in => pipe_rd, :out => file)
+        git_archive_pid = spawn(*git_archive_cmd, :out => pipe_wr)
+        compress_pid = spawn(*compress_cmd, :in => pipe_rd, :out => file)
         pipe_rd.close
         pipe_wr.close
-        Process.waitpid(git_pid)
+        Process.waitpid(git_archive_pid)
         Process.waitpid(compress_pid)
       end
     end
