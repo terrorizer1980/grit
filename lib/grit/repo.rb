@@ -728,9 +728,7 @@ module Grit
     def advanced_grep(searchtext, contextlines = 3, branch = 'master')
 
       # If there's not an even number of quote marks, get rid of them all
-      if(searchtext.count('"') % 2 == 1)
-        searchtext = searchtext.gsub('"', '')
-      end
+      searchtext = searchtext.gsub('"', '') if searchtext.count('"') % 2 == 1
 
       # Escape the text, but allow spaces and quote marks (by unescaping them)
       searchtext = Shellwords.shellescape(searchtext).gsub('\ ',' ').gsub('\\"','"')
@@ -738,14 +736,14 @@ module Grit
       # Shellwords happens to parse search terms really nicely!
       terms = Shellwords.split(searchtext)
 
-      term_args = Array.new
-      negative_args = Array.new
+      term_args = []
+      negative_args = []
 
       # For each search term (either a word or a quoted string), add the relevant term argument to either the term
       # args array, or the negative args array, used for two separate calls to git grep
       terms.each do |term|
         arg_array = term_args
-        if(term[0] == '-') then
+        if term[0] == '-'
           arg_array = negative_args
           term = term[1..-1]
         end
@@ -758,7 +756,7 @@ module Grit
 
       # Find files that match the negated terms; these will be excluded from the results
       excluded_files = Array.new
-      if !negative_args.empty? then
+      unless negative_args.empty?
         negative = git.native(:grep, {pipeline: false}, '-F', '-i', '--files-with-matches', *negative_args, branch).encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
         excluded_files = negative.split("\n").map {|text| text.partition(':')[2]}
       end
@@ -785,9 +783,10 @@ module Grit
               file = text
             end
           end
-          if(excluded_files.include? file || (excluded_files.include? text[/^Binary file (.+) matches$/, 1].partition(':')[2])) then
-            next
-          end
+
+          # Skip this result if the file is to be ignored (due to a negative match)
+          next if excluded_files.include? file || ( excluded_files.include? text[/^Binary file (.+) matches$/, 1].partition(':')[2] )
+
           lines.each_with_index do |line, j|
             line.chomp!
             number, text = line.split("\0", 2)
