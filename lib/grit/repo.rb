@@ -720,6 +720,88 @@ module Grit
       greps
     end
 
+    def final_escape(str)
+      str.gsub('"', '\\"')
+    end
+
+    # Accepts quoted strings and negation (-) operator in search strings
+    def advanced_grep(searchtext, contextlines = 3, branch = 'master')
+
+      # If there's not an even number of quote marks, get rid of them all
+      if(searchtext.count('"') % 2 == 1)
+        searchtext = searchtext.gsub('"', '')
+      end
+
+      # Escape the text, but allow spaces and quote marks (by unescaping them)
+      searchtext = Shellwords.shellescape(searchtext).gsub('\ ',' ').gsub('\\"','"')
+
+      # Shellwords happens to parse search terms really nicely!
+      terms = Shellwords.split(searchtext)
+
+      term_args = Array.new
+      negative_args = Array.new
+
+      # For each search term (either a word or a quoted string), add the relevant term argument to either the term
+      # args array, or the negative args array, used for two separate calls to git grep
+      terms.each do |term|
+        arg_array = term_args
+        if(term[0] == '-') then
+          arg_array = negative_args
+          term = term[1..-1]
+        end
+        arg_array.push '-e'
+        arg_array.push final_escape(term)
+      end
+
+      context_arg = '-C ' + contextlines.to_s
+      result = git.native(:grep, {pipeline: false}, '-n', '-F', '-i', '-z', '--heading', '--break', '--all-match', context_arg, *term_args, branch).encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+
+      # Find files that match the negated terms; these will be excluded from the results
+      excluded_files = Array.new
+      if !negative_args.empty? then
+        negative = git.native(:grep, {pipeline: false}, '-F', '-i', '--files-with-matches', *negative_args, branch).encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+        excluded_files = negative.split("\n").map {|text| text.partition(':')[2]}
+      end
+
+      greps = []
+      filematches = result.split("\n\n")
+      filematches.each do |filematch|
+        binary = false
+        file = ''
+        matches = filematch.split("--\n")
+        matches.each_with_index do |match, i|
+          content = []
+          startline = 0
+          lines = match.split("\n")
+          if i == 0
+            text = lines.first
+            lines.slice!(0)
+            file = text[/^Binary file (.+) matches$/]
+            if file
+              puts "BINARY #{file}"
+              binary = true
+            else
+              text.slice! /^#{branch}:/
+              file = text
+            end
+          end
+          if(excluded_files.include? file || (excluded_files.include? text[/^Binary file (.+) matches$/, 1].partition(':')[2])) then
+            next
+          end
+          lines.each_with_index do |line, j|
+            line.chomp!
+            number, text = line.split("\0", 2)
+            if j == 0
+              startline = number.to_i
+            end
+            content << text
+          end
+          greps << Grit::Grep.new(self, file, startline, content, binary)
+        end
+      end
+      greps
+    end
+
     # Pretty object inspection
     def inspect
       %Q{#<Grit::Repo "#{@path}">}

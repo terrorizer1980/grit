@@ -418,4 +418,36 @@ class TestRepo < Test::Unit::TestCase
     assert_equal 'test/test_repo.rb', res.first.filename
     assert_equal '  def test_select_existing_objects', res.first.content[1]
   end
+
+  def test_advanced_grep
+    # The quoted string should behave as above
+    res = @r.advanced_grep('"def test_select_existing_objects"', 1, 'master')
+    assert_equal 1, res.length
+    assert_equal 413, res.first.startline
+    assert_equal 'test/test_repo.rb', res.first.filename
+    assert_equal '  def test_select_existing_objects', res.first.content[1]
+
+    # An unquoted string means that all words must be in the file, but not necessarily in sequence
+    res = @r.advanced_grep('test_gc_auto test_archive_tar_gz', 1, 'master')
+    assert_equal 2, res.length
+    assert_equal 291, res[0].startline
+    assert_equal 311, res[1].startline
+    assert_equal 'test/test_repo.rb', res[0].filename
+    assert_equal 'test/test_repo.rb', res[1].filename
+
+    # This combination of quoted and unquoted terms should return the same results as before
+    res = @r.advanced_grep('test_gc_auto "def test_archive_tar_gz"', 1, 'master')
+    assert_equal 2, res.length
+    assert_equal 291, res[0].startline
+    assert_equal 311, res[1].startline
+    assert_equal 'test/test_repo.rb', res[0].filename
+    assert_equal 'test/test_repo.rb', res[1].filename
+
+    # With all these negations, only the 7 results from loose.rb should be returned
+    res = @r.advanced_grep('header -replace -state -Accept -repository -patch', 1, 'master')
+    assert_equal 7, res.length
+    assert_equal 44, res[0].startline
+    assert_equal 'lib/grit/git-ruby/internal/loose.rb', res[0].filename
+
+  end
 end
