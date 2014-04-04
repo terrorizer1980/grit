@@ -11,6 +11,21 @@
 * [![Coverage Status](https://coveralls.io/repos/gitlabhq/grit/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/grit)
 
 
+## Fork changes
+
+We patched existing grit library to use it inside GitLab
+
+* Added grep method to look for files
+* Fixed commits parsing for signed commits
+* Encoding fixes
+* Cleanup and improve code style
+* Handle filenames with spaces
+* Fixes symlinks omission from diff
+* Added Gemfile
+* and much more small fixes
+
+
+## Grit
 
 Grit gives you object oriented read/write access to Git repositories via Ruby.
 The main goals are stability and performance. To this end, some of the
