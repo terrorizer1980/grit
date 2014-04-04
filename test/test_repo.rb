@@ -253,13 +253,13 @@ class TestRepo < Test::Unit::TestCase
   # diff
 
   def test_diff
-    Git.any_instance.expects(:diff).with({}, 'master^', 'master', '--')
+    Git.any_instance.expects(:native).with('diff', {}, 'master^', 'master', '--')
     @r.diff('master^', 'master')
 
-    Git.any_instance.expects(:diff).with({}, 'master^', 'master', '--', 'foo/bar')
+    Git.any_instance.expects(:native).with('diff', {}, 'master^', 'master', '--', 'foo/bar')
     @r.diff('master^', 'master', 'foo/bar')
 
-    Git.any_instance.expects(:diff).with({}, 'master^', 'master', '--', 'foo/bar', 'foo/baz')
+    Git.any_instance.expects(:native).with('diff', {}, 'master^', 'master', '--', 'foo/bar', 'foo/baz')
     @r.diff('master^', 'master', 'foo/bar', 'foo/baz')
   end
 
@@ -272,7 +272,7 @@ class TestRepo < Test::Unit::TestCase
 
   # commit_diff
 
-  def test_diff
+  def test_commit_diff
     Git.any_instance.expects(:diff).returns(fixture('diff_p'))
     diffs = @r.commit_diff('master')
 
