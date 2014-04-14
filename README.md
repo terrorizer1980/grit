@@ -4,6 +4,7 @@
 
 [![CI](http://ci.gitlab.org/projects/5/status?ref=master)](http://ci.gitlab.org/projects/5?ref=master)
 [![build status](https://secure.travis-ci.org/gitlabhq/grit.png)](https://travis-ci.org/gitlabhq/grit)
+[![Gem Version](https://badge.fury.io/rb/gitlab-grit.svg)](http://badge.fury.io/rb/gitlab-grit)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/grit.png)](https://codeclimate.com/github/gitlabhq/grit)
 [![Coverage Status](https://coveralls.io/repos/gitlabhq/grit/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/grit)
 
