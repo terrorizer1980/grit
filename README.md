@@ -2,13 +2,10 @@
 
 #### Code status
 
-* [![CI](http://ci.gitlab.org/projects/5/status?ref=master)](http://ci.gitlab.org/projects/5?ref=master)
-
-* [![build status](https://secure.travis-ci.org/gitlabhq/grit.png)](https://travis-ci.org/gitlabhq/grit)
-
-* [![Code Climate](https://codeclimate.com/github/gitlabhq/grit.png)](https://codeclimate.com/github/gitlabhq/grit)
-
-* [![Coverage Status](https://coveralls.io/repos/gitlabhq/grit/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/grit)
+[![CI](http://ci.gitlab.org/projects/5/status?ref=master)](http://ci.gitlab.org/projects/5?ref=master)
+[![build status](https://secure.travis-ci.org/gitlabhq/grit.png)](https://travis-ci.org/gitlabhq/grit)
+[![Code Climate](https://codeclimate.com/github/gitlabhq/grit.png)](https://codeclimate.com/github/gitlabhq/grit)
+[![Coverage Status](https://coveralls.io/repos/gitlabhq/grit/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/grit)
 
 
 ## Fork changes
@@ -39,8 +36,10 @@ This software was developed to power GitHub, and should be considered
 production ready. An extensive test suite is provided to verify its
 correctness.
 
-Grit is maintained by Tom Preston-Werner, Scott Chacon, Chris Wanstrath, and
+Original Grit is maintained by Tom Preston-Werner, Scott Chacon, Chris Wanstrath, and
 PJ Hyett.
+
+This fork is maintained by GitLab.com
 
 This documentation is accurate as of Grit 2.3.
 
@@ -61,11 +60,11 @@ Easiest install is via RubyGems:
 
 Grit's Git repo is available on GitHub, which can be browsed at:
 
-    http://github.com/mojombo/grit
+    http://github.com/gitlabhq/grit
 
 and cloned with:
 
-    git clone git://github.com/mojombo/grit.git
+    git clone git://github.com/gitlabhq/grit.git
 
 
 ### Development
