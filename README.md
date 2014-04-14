@@ -67,13 +67,9 @@ and cloned with:
 
     git clone git://github.com/gitlabhq/grit.git
 
+If you're installing from source, you can use Bundler to pick up all the gems:
 
-### Development
-
-You will need these gems to get tests to pass:
-
-* mocha
-
+    $ bundle install
 
 ### Contributing
 
