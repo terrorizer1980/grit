@@ -22,6 +22,7 @@ We patched existing grit library to use it inside GitLab
 * Handle filenames with spaces
 * Fixes symlinks omission from diff
 * Added Gemfile
+* Ruby 2.0 support
 * and much more small fixes
 
 
