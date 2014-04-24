@@ -14,11 +14,11 @@ module GritExt
 
     # if message is utf-8 encoding, just return it
     message.force_encoding("UTF-8")
-    return message if message.valid_encoding?
+    return ensure_encoding(message) if message.valid_encoding?
 
     # return message if message type is binary
     detect = CharlockHolmes::EncodingDetector.detect(message)
-    return message.force_encoding("BINARY") if detect && detect[:type] == :binary
+    return ensure_encoding(message.force_encoding("BINARY")) if detect && detect[:type] == :binary
 
     # encoding message to detect encoding
     if detect && detect[:encoding]
@@ -26,16 +26,22 @@ module GritExt
     end
 
     # encode and clean the bad chars
-    message.replace clean(message)
+    message = message.replace clean(message)
+    ensure_encoding(message)
   rescue
     encoding = detect ? detect[:encoding] : "unknown"
     "--broken encoding: #{encoding}"
   end
 
   private
+
   def clean(message)
     message.encode("UTF-16BE", :undef => :replace, :invalid => :replace, :replace => "")
            .encode("UTF-8")
            .gsub("\0".encode("UTF-8"), "")
+  end
+
+  def ensure_encoding(message)
+    message.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "")
   end
 end
