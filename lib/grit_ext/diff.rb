@@ -16,7 +16,11 @@ module Grit
         lines = @diff.lines.to_a
         path = GritExt.encode! lines.shift(2).join
         body = GritExt.encode! lines.join
-        @diff = path + body
+        begin
+          @diff = path + body
+        rescue Encoding::CompatibilityError
+          @diff = GritExt.clean(path) + GritExt.clean(body)
+        end
       end
     end
   end
