@@ -32,7 +32,6 @@ module GritExt
     "--broken encoding: #{encoding}"
   end
 
-  private
   def clean(message)
     message.encode("UTF-16BE", :undef => :replace, :invalid => :replace, :replace => "")
            .encode("UTF-8")
