@@ -93,9 +93,9 @@ module Grit
 
     attr_accessor :git_dir, :bytes_read, :work_tree
 
-    def initialize(git_dir)
+    def initialize(git_dir, options={})
       self.git_dir    = git_dir
-      self.work_tree  = git_dir.gsub(/\/\.git$/,'')
+      self.work_tree  = options[:work_tree]
       self.bytes_read = 0
     end
 
@@ -326,6 +326,7 @@ module Grit
       argv = []
       argv << Git.git_binary
       argv << "--git-dir=#{git_dir}" if base
+      argv << "--work-tree=#{work_tree}" if work_tree
       argv << cmd.to_s.tr('_', '-')
       argv.concat(options_to_argv(options))
       argv.concat(args)
