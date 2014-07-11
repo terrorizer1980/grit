@@ -88,7 +88,7 @@ class TestGit < Test::Unit::TestCase
     args = [
       { 'A' => 'B' },
       Grit::Git.git_binary, "--git-dir=#{@git.git_dir}", "help", "-a",
-      {:input => nil, :chdir => nil, :timeout => Grit::Git.git_timeout, :max => Grit::Git.git_max_size}
+      {:input => nil, :timeout => Grit::Git.git_timeout, :max => Grit::Git.git_max_size}
     ]
     p = Grit::Git::Child.new(*args)
     Grit::Git::Child.expects(:new).with(*args).returns(p)

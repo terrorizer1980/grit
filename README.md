@@ -22,6 +22,7 @@ We patched existing grit library to use it inside GitLab
 * Added Gemfile
 * Ruby 2.0 support
 * Automatically set the `--work-tree=` option for Git
+* Remove `chdir:` option from Grit::Git#native
 * and much more small fixes
 
 

@@ -320,7 +320,6 @@ module Grit
       input    = options.delete(:input)
       timeout  = options.delete(:timeout); timeout = true if timeout.nil?
       base     = options.delete(:base);    base    = true if base.nil?
-      chdir    = options.delete(:chdir)
 
       # build up the git process argv
       argv = []
@@ -337,7 +336,6 @@ module Grit
       process =
         Child.new(env, *(argv + [{
           :input   => input,
-          :chdir   => chdir,
           :timeout => (Grit::Git.git_timeout if timeout == true),
           :max     => (Grit::Git.git_max_size if timeout == true)
         }]))
