@@ -26,9 +26,9 @@ class TestIndexStatus < Test::Unit::TestCase
   end
 
   def test_status
-    Git.any_instance.expects(:diff_index).with({chdir: GRIT_REPO}, 'HEAD').returns(fixture('diff_index'))
-    Git.any_instance.expects(:diff_files).with({chdir: GRIT_REPO}).returns(fixture('diff_files'))
-    Git.any_instance.expects(:ls_files).with({chdir: GRIT_REPO, stage: true}).returns(fixture('ls_files'))
+    Git.any_instance.expects(:diff_index).with({}, 'HEAD').returns(fixture('diff_index'))
+    Git.any_instance.expects(:diff_files).with({}).returns(fixture('diff_files'))
+    Git.any_instance.expects(:ls_files).with({stage: true}).returns(fixture('ls_files'))
     status = @r.status
     stat = status['lib/grit/repo.rb']
     assert_equal stat.sha_repo, "71e930d551c413a123f43e35c632ea6ba3e3705e"
