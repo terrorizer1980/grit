@@ -255,9 +255,6 @@ module Grit
           author = UserInfo.new(value)
         when "committer"
           committer = UserInfo.new(value)
-        else
-          warn "unknown header '%s' in commit %s" % \
-            [key, rawobject.sha1.unpack("H*")[0]]
         end
       end
       if not tree && author && committer
@@ -322,9 +319,6 @@ module Grit
           tag = value
         when "tagger"
           tagger = UserInfo.new(value)
-        else
-          warn "unknown header '%s' in tag" % \
-            [key, rawobject.sha1.unpack("H*")[0]]
         end
       end
 
