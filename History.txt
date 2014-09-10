@@ -1,3 +1,7 @@
+== 2.7.1
+  * Suppress 'unkown header' warnings
+  * Add process.out to CommandFailed error 
+
 == 2.7.0
   * Remove the `chdir:` option for thread-safety
   * Automatically set the `--work-tree=` Git option
