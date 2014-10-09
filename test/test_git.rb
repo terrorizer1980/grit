@@ -43,6 +43,18 @@ class TestGit < Test::Unit::TestCase
     @git.something
   end
 
+  def test_with_timeout_restored
+    begin
+      Grit::Git.with_timeout(4) do
+        raise 'wow'
+      end
+    rescue
+      nil
+    end
+
+    assert_equal Grit::Git.git_timeout, 5
+  end
+
   def test_can_skip_timeout
     Timeout.expects(:timeout).never
     @git.something(:timeout => false)

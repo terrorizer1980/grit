@@ -90,9 +90,13 @@ module Grit
 
     def self.with_timeout(timeout = 10)
       old_timeout = Grit::Git.git_timeout
-      Grit::Git.git_timeout = timeout
-      yield
-      Grit::Git.git_timeout = old_timeout
+
+      begin
+        Grit::Git.git_timeout = timeout
+        yield
+      ensure
+        Grit::Git.git_timeout = old_timeout
+      end
     end
 
     attr_accessor :git_dir, :bytes_read, :work_tree
