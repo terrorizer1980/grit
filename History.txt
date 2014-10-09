@@ -1,11 +1,11 @@
-== 2.7.2
+== 2.6.12
   * Make sure grit restores old timeout value even if exception occures
 
-== 2.7.1
+== 2.6.11
   * Suppress 'unkown header' warnings
   * Add process.out to CommandFailed error 
 
-== 2.7.0
+== 2.6.10
   * Remove the `chdir:` option for thread-safety
   * Automatically set the `--work-tree=` Git option
 
