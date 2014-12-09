@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/helper'
 
 class TestGit < Test::Unit::TestCase
   def setup
-    @git = Git.new(File.join(File.dirname(__FILE__), *%w[..]))
+    @git = Git.new(File.absolute_path(File.join(File.dirname(__FILE__), *%w[..])))
   end
 
   def teardown
