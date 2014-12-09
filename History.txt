@@ -1,3 +1,6 @@
+== 2.7.3
+  * Add guards against path traversal and leading '|'
+
 == 2.7.2
   * Make sure grit restores old timeout value even if exception occures
 
