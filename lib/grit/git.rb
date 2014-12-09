@@ -117,7 +117,9 @@ module Grit
     #
     # Returns Boolean
     def fs_exist?(file)
-      File.exist?(File.join(self.git_dir, file))
+      path = File.join(self.git_dir, file)
+      raise "Invalid path: #{path}" unless File.absolute_path(path) == path
+      File.exist?(path)
     end
 
     # Read a normal file from the filesystem.
@@ -125,7 +127,9 @@ module Grit
     #
     # Returns the String contents of the file
     def fs_read(file)
-      File.read(File.join(self.git_dir, file))
+      path = File.join(self.git_dir, file)
+      raise "Invalid path: #{path}" unless File.absolute_path(path) == path
+      File.read(path)
     end
 
     # Write a normal file to the filesystem.
@@ -135,6 +139,7 @@ module Grit
     # Returns nothing
     def fs_write(file, contents)
       path = File.join(self.git_dir, file)
+      raise "Invalid path: #{path}" unless File.absolute_path(path) == path
       FileUtils.mkdir_p(File.dirname(path))
       File.open(path, 'w') do |f|
         f.write(contents)
