@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/helper'
 
 class TestGit < Test::Unit::TestCase
   def setup
-    @git = Git.new(File.join(File.dirname(__FILE__), *%w[..]))
+    @git = Git.new(File.absolute_path(File.join(File.dirname(__FILE__), *%w[..])))
   end
 
   def teardown
@@ -83,12 +83,24 @@ class TestGit < Test::Unit::TestCase
     assert_equal 'bar', @git.fs_read('foo')
   end
 
+  def test_fs_read_path_traversal
+    assert_raise RuntimeError do
+      @git.fs_read('../foo')
+    end
+  end
+
   def test_fs_write
     f = stub
     f.expects(:write).with('baz')
     FileUtils.expects(:mkdir_p).with(File.join(@git.git_dir, 'foo'))
     File.expects(:open).with(File.join(@git.git_dir, 'foo/bar'), 'w').yields(f)
     @git.fs_write('foo/bar', 'baz')
+  end
+
+  def test_fs_write_path_traversal
+    assert_raise RuntimeError do
+      @git.fs_read('../foo/bar')
+    end
   end
 
   def test_fs_delete

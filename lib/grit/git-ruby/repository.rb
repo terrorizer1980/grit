@@ -683,7 +683,9 @@ module Grit
       end
 
       def self.add_file(name, contents)
-        File.open(name, 'w') do |f|
+        path = File.join(Dir.pwd, name)
+        raise "Invalid path: #{path}" unless File.absolute_path(path) == path
+        File.open(path, 'w') do |f|
           f.write contents
         end
       end
