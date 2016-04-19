@@ -1,7 +1,7 @@
 before_script:
   - ruby -v
   - which ruby
-  - sudo apt-get install libicu-dev -y
+  - apt-get install libicu-dev -y
   - gem install bundler --no-ri --no-rdoc
   - bundle install
 
