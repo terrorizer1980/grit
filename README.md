@@ -2,7 +2,7 @@
 
 #### Code status
 
-[![CI](http://ci.gitlab.org/projects/5/status?ref=master)](http://ci.gitlab.org/projects/5?ref=master)
+[![build status](https://gitlab.com/gitlab-org/gitlab-grit/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-grit/commits/master)
 [![build status](https://secure.travis-ci.org/gitlabhq/grit.png)](https://travis-ci.org/gitlabhq/grit)
 [![Gem Version](https://badge.fury.io/rb/gitlab-grit.svg)](http://badge.fury.io/rb/gitlab-grit)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/grit.png)](https://codeclimate.com/github/gitlabhq/grit)
