@@ -10,6 +10,5 @@ group :development, :test do
   gem 'diff-lcs', "~> 1.1"
   gem 'mocha', "~> 0.13.2"
   gem 'coveralls', require: false
-  gem 'rspec', '~> 2.11'
   gem 'test-unit'
 end
