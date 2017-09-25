@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    gitlab-grit (2.8.1)
+    gitlab-grit (2.8.2)
       charlock_holmes (~> 0.6)
       diff-lcs (~> 1.1)
-      mime-types (>= 1.16, < 3)
+      mime-types (>= 1.16)
       posix-spawn (~> 0.3)
 
 GEM
@@ -27,6 +27,7 @@ GEM
       metaclass (~> 0.0.1)
     multi_json (1.7.2)
     posix-spawn (0.3.6)
+    power_assert (0.2.6)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
@@ -47,6 +48,8 @@ GEM
       simplecov-html (~> 0.7.1)
     simplecov-html (0.7.1)
     slop (3.4.4)
+    test-unit (3.1.5)
+      power_assert
     thor (0.18.0)
 
 PLATFORMS
@@ -62,6 +65,7 @@ DEPENDENCIES
   pry
   rake
   rspec (~> 2.11)
+  test-unit
 
 BUNDLED WITH
-   1.11.2
+   1.15.3

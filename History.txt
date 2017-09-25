@@ -1,5 +1,8 @@
+== 2.8.2
+  * Remove the pessimistic `< 3` condition on mime-types
+
 == 2.8.1
-  * Resolve dependencies in better way and fix bundle install 
+  * Resolve dependencies in better way and fix bundle install
 
 == 2.8.0
   * Update mime-types dependency
@@ -12,7 +15,7 @@
 
 == 2.7.1
   * Suppress 'unkown header' warnings
-  * Add process.out to CommandFailed error 
+  * Add process.out to CommandFailed error
 
 == 2.7.0
   * Remove the `chdir:` option for thread-safety
